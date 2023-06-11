@@ -1,39 +1,69 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include "player.h"
 
 #include "game.h"
 
-Game* Game::instance = 0;
 
-Game::Game(const unsigned int &width, const unsigned int &height, const std::string& title) : 
+Game* Game::instance = nullptr;
+
+Game::Game(const unsigned int &width, const unsigned int &height, const int &tileSize) : 
 winWidth{width},
 winHeight{height},
-title{title} { }
+tileSize{tileSize} {}
 
-Game* Game::GetInstance(const unsigned int &width, const unsigned int &height, const std::string& title) {
+Game* Game::GetInstance(const unsigned int &width, const unsigned int &height, const int &tileSize) {
     if (instance == nullptr) {
-        instance = new Game(width, height, title);
+        instance = new Game(width, height, tileSize);
     }
     return instance;
 }
 
-void Game::Init() {
-    //
+Game* Game::GetInstance() {
+    if (instance == nullptr) {
+        instance = new Game(WINDOW_WIDTH_DEFAULT, WINDOW_HEIGHT_DEFAULT, 128);
+    }
+    return instance;
+}
+
+void Game::Init(Player* p) {
+    // Player
+    player = p;
+
+    // Camera
+    camera = new RaycastCamera(player);
+    camera->Init();
+
+    // Levels
+    int mapW = 8, mapH = 8;
+    int map[] = {
+        1,1,1,1,1,1,1,1,
+        1,0,1,0,0,0,0,1,
+        1,0,1,0,0,0,0,1,
+        1,0,1,0,0,0,0,1,
+        1,0,0,0,0,0,0,1,
+        1,0,0,0,0,1,0,1,
+        1,0,0,0,0,0,0,1,
+        1,1,1,1,1,1,1,1
+    };
+
+    GameLevel* gl = new GameLevel();
+    gl->SetMap(map, mapW, mapH);
+
+    currentLevel = gl;
+}
+
+void Game::Input() {
+    player->InputOperations();
 }
 
 void Game::Update() {
     //
 }
 
-void Game::Input() {
-    //
+void Game::Render() {
+    camera->Render();
 }
 
-void Game::Display() {
-    //
-}
-
-Game::~Game() {
-    //
-}
+Game::~Game() { }

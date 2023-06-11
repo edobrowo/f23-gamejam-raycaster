@@ -8,7 +8,12 @@ private:
     Player* player;
 
 public:
+    RaycastCamera(Player *p);
 
+    void Init();
+    void Render();
+
+    ~RaycastCamera();
 };
 
 #endif // RAYCAST_CAMERA_H

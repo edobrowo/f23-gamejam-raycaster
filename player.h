@@ -7,6 +7,7 @@ public:
     float speed;
 
     Player(float initialX, float initialY, float speed);
+    Player();
 
     void InputOperations();
     void setPosition(float x, float y);

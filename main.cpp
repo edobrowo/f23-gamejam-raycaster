@@ -1,27 +1,22 @@
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <GLFW/glfw3.h>
-
 #include "util.h"
+
+using namespace util;
 
 #define WIDTH       1024
 #define HEIGHT      512
-#define WIDTH_MIN   512
-#define HEIGHT_MIN  256
-#define WIDTH_MAX   GLFW_DONT_CARE
-#define HEIGHT_MAX  GLFW_DONT_CARE
-
-#define PI 3.1415926535
-#define DR 0.0174533
 
 int winWidth, winHeight;
 float px, py, pdx, pdy, pa;
 bool keyStates[512];
 
-// Callbacks
+// GLFW callbacks
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -127,21 +122,11 @@ void drawMap2D() {
     }
 }
 
-float dist(float ax, float ay, float bx, float by, float ang) {
-    return sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
-}
-
 void drawRays3D() {
     int r, mx, my, mp, dof;
     float rx, ry, ra, xo, yo, disT;
 
-    ra = pa - 30 * DR;
-    if (ra < 0) {
-        ra += 2 * PI;
-    }
-    if (ra > 2 * PI) {
-        ra -= 2 * PI;
-    }
+    ra = wrap2pi(pa - 30 * DR);
 
     for (r = 0; r < 60; ++r) {
         // Horizontal
@@ -173,7 +158,7 @@ void drawRays3D() {
             if (0 < mp && mp < mapX * mapY && map[mp] == 1) {
                 hx = rx;
                 hy = ry;
-                disH = dist(px, py, hx, hy, ra);
+                disH = dist(px, py, hx, hy);
                 dof = 8;
             } else {
                 rx += xo;
@@ -211,7 +196,7 @@ void drawRays3D() {
             if (0 < mp && mp < mapX * mapY && map[mp] == 1) {
                 vx = rx;
                 vy = ry;
-                disV = dist(px, py, vx, vy, ra);
+                disV = dist(px, py, vx, vy);
                 dof = 8;
             } else {
                 rx += xo;
@@ -232,39 +217,29 @@ void drawRays3D() {
             glColor3f(0.7, 0, 0);
         }
 
+/*
         glLineWidth(1);
         glBegin(GL_LINES);
         glVertex2i(px, py);
         glVertex2i(rx, ry);
         glEnd();
+*/
 
         // 3D walls
-        float ca = pa - ra;
-        if (ca < 0) {
-            ca += 2 * PI;
-        }
-        if (ca > 2 * PI) {
-            ca -= 2 * PI;
-        }
+        float ca = wrap2pi(pa - ra);
+
         disT = disT * cos(ca); // fisheye fix
         float lineH = (mapS * HEIGHT) / disT * 2; // line height
-        if (lineH > HEIGHT * 2) {
-            lineH = HEIGHT * 2;
-        }
+        clamp(lineH, 0, 2 * HEIGHT);
         float lineO = HEIGHT - lineH / 2; // line offset
+
         glLineWidth(16);
         glBegin(GL_LINES);
         glVertex2i(r * 16 + WIDTH, lineO);
         glVertex2i(r * 16 + WIDTH, lineH + lineO);
         glEnd();
 
-        ra += DR;
-        if (ra < 0) {
-            ra += 2 * PI;
-        }
-        if (ra > 2 * PI) {
-            ra -= 2 * PI;
-        }
+        ra = wrap2pi(ra + DR);
     }
 }
 
@@ -296,7 +271,7 @@ int main() {
         glfwTerminate();
         return -1;
     }
-    glfwSetWindowSizeLimits(window, WIDTH_MIN, HEIGHT_MIN, WIDTH_MAX, HEIGHT_MAX);
+    glfwSetWindowSizeLimits(window, WIDTH, HEIGHT, WIDTH, HEIGHT);
     glfwMakeContextCurrent(window);
 
     // Wait 1 frame until swapping buffers (vsync; 0 specifies to immediately load frames)
@@ -320,8 +295,6 @@ int main() {
     }
 
     glfwDestroyWindow(window);
-
     glfwTerminate();
-
     return 0;
 }

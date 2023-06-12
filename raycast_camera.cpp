@@ -33,17 +33,18 @@ void RaycastCamera::Render() {
     GameLevel* level = gs->currentLevel;
     const int tileSize = gs->tileSize;
 
+    // Number of tiles to perform the check through
     int depthOfField;
+
     float rayX, rayY, rayAngle;
     float offsetX, offsetY, maxDistance;
 
     rayAngle = util::wrap2pi(player->angle - NUM_RAYS / 2 * DR);
 
     for (size_t ray = 0; ray < NUM_RAYS; ++ray) {
-        // Number of tiles to check
-        depthOfField = 0;
 
         // Horizontal line check
+        depthOfField = 0;
         float distanceH = std::numeric_limits<float>::max();
         float horizontalX = player->posX, horizontalY = player->posY;
         float nrtan = -1 / tan(rayAngle);
@@ -90,12 +91,12 @@ void RaycastCamera::Render() {
             rayX = (static_cast<int>(player->posX) / tileSize) * tileSize - 0.0001;
             rayY = (player->posX - rayX) * ntan + player->posY;
             offsetX = -tileSize;
-            offsetY = -offsetX * nrtan;
+            offsetY = -offsetX * ntan;
         } else if (rayAngle < PI / 2 || rayAngle > 3 * PI / 2) {
             rayX = (static_cast<int>(player->posX) / tileSize) * tileSize + tileSize;
             rayY = (player->posX - rayX) * ntan + player->posY;
             offsetX = tileSize;
-            offsetY = -offsetX * ntan;
+            offsetY = -offsetX * nrtan;
         } else if (rayAngle == 0 || rayAngle == PI) {
             rayY = player->posY;
             rayX = player->posX;

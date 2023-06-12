@@ -3,8 +3,9 @@
 
 class Player {
 public:
-    float posX, posY, posDiffX, posDiffY, angle;
-    float speed;
+    float posX, posY, angle;
+    float speed, rotationSpeed;
+    float posDiffX, posDiffY;
 
     Player(float initialX, float initialY, float speed);
     Player();

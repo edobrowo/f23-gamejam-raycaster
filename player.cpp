@@ -10,19 +10,23 @@
 Player::Player(float initialX, float initialY, float speed) :
 posX{initialX},
 posY{initialY},
+angle{PI / 2},
 speed{speed},
-angle{PI / 2} {
-    posDiffX = cos(angle) * 5;
-    posDiffY = sin(angle) * 5;
+rotationSpeed{0.05f}
+{
+    posDiffX = cos(angle) * speed;
+    posDiffY = sin(angle) * speed;
 }
 
 Player::Player() :
 posX{WINDOW_WIDTH_DEFAULT / 2},
 posY{WINDOW_HEIGHT_DEFAULT / 2},
+angle{3*PI / 2},
 speed{5.f},
-angle{3*PI / 2} {
-    posDiffX = cos(angle) * 5;
-    posDiffY = sin(angle) * 5;
+rotationSpeed{0.05f}
+{
+    posDiffX = cos(angle) * speed;
+    posDiffY = sin(angle) * speed;
 }
 
 void Player::InputOperations() {
@@ -34,7 +38,7 @@ void Player::InputOperations() {
         posY += posDiffY;
     }
     if (keyStates[GLFW_KEY_A]) {
-        angle = util::wrap2pi(angle - 0.1);
+        angle = util::wrap2pi(angle - rotationSpeed);
         posDiffX = cos(angle) * speed;
         posDiffY = sin(angle) * speed;
     }
@@ -43,7 +47,7 @@ void Player::InputOperations() {
         posY -= posDiffY;
     }
     if (keyStates[GLFW_KEY_D]) {
-        angle = util::wrap2pi(angle + 0.1);
+        angle = util::wrap2pi(angle + rotationSpeed);
         posDiffX = cos(angle) * speed;
         posDiffY = sin(angle) * speed;
     }

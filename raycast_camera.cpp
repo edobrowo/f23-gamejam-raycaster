@@ -96,7 +96,7 @@ void RaycastCamera::Render() {
             rayX = (static_cast<int>(player->posX) / tileSize) * tileSize + tileSize;
             rayY = (player->posX - rayX) * ntan + player->posY;
             offsetX = tileSize;
-            offsetY = -offsetX * nrtan;
+            offsetY = -offsetX * ntan;
         } else if (rayAngle == 0 || rayAngle == PI) {
             rayY = player->posY;
             rayX = player->posX;

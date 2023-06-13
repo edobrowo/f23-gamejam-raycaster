@@ -131,12 +131,6 @@ void RaycastCamera::Render() {
             glColor3f(0.7, 0, 0);
         }
 
-        /*glLineWidth(1);
-        glBegin(GL_LINES);
-        glVertex2i(px, py);
-        glVertex2i(rx, ry);
-        glEnd();*/
-
         // Fisheye lens correction
         float angleDiff = util::wrap2pi(player->angle - rayAngle);
         maxDistance = maxDistance * cos(angleDiff);

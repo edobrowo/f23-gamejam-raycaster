@@ -38,7 +38,7 @@ int main() {
     Game* gs = Game::GetInstance(WINDOW_WIDTH, WINDOW_HEIGHT, 128);
 
     // Window and context
-    GLFWwindow* window = glfwCreateWindow(gs->winWidth, gs->winHeight, "Glurblestomp", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(gs->winWidth, gs->winHeight, "Raycast", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
